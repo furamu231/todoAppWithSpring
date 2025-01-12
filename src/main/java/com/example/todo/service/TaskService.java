@@ -1,16 +1,29 @@
 package com.example.todo.service;
 
 import java.util.List;
+import java.util.Optional;
 
 import org.springframework.stereotype.Service;
+
+import com.example.todo.repository.task.TaskRepository;
 
 @Service
 public class TaskService {
 
+    private final TaskRepository taskRepository;
+
+    public TaskService(TaskRepository taskRepository) {
+        this.taskRepository = taskRepository;
+    }
+
     public List<TaskEntity> find() {
-        var task1 = new TaskEntity(1L, "洗濯をする", "柔軟剤は使わないで", TaskStatus.TODO);
-        var task2 = new TaskEntity(2L, "たまご買う", "サイズはM", TaskStatus.DOING);
-        var taskList = List.of(task1, task2);
+        var taskList = taskRepository.select();
         return taskList;
+    }
+    
+    // TaskEntityが存在しない可能性を考慮して、Optional<TaskEntity>を返すように設計しています。
+    public Optional<TaskEntity> findById(long taskId) {
+        return taskRepository.selectById(taskId);
+        
     }
 }
