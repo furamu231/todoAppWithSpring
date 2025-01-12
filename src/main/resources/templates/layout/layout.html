@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ja" 
+      xmlns:th="http://www.thymeleaf.org"
+      xmlns:layout="http://www.ultraq.net.nz/thymeleaf/layout">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TODOアプリ</title>
+    <link rel="stylesheet" th:href="@{/webjars/bootstrap/css/bootstrap.min.css}"/>
+</head>
+<body>
+    <script th:src="@{/webjars/bootstrap/js/bootstrap.min.js}"></script>
+    <div class="container">
+        <header>This is header</header>
+        <section layout:fragment="content">
+            <!-- 子テンプレートで置き換えられる内容 -->
+        </section>
+        <footer layout:fragment="footer">This is footer</footer>
+    </div>
+</body>
+</html>
+
