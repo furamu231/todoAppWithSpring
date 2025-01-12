@@ -49,7 +49,8 @@ public class TaskController {
     public String create(TaskForm form, Model model) {
         var newEntity = new TaskEntity(null, form.summary(), form.description(), TaskStatus.valueOf(form.status()));
         taskService.create(newEntity);
-        return list(model);
+        // ２重サブミットを防ぐため、リダイレクトを行います。
+        return "redirect:/tasks";
     }
 }
 
