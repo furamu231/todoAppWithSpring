@@ -5,13 +5,12 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
 
-import com.example.todo.service.TaskEntity;
 import com.example.todo.service.TaskService;
-import com.example.todo.service.TaskStatus;
-
 
 @Controller
+@RequestMapping("/tasks")
 // @RequiredArgsConstructor Lombokの読み込みに失敗するため、使用することができません。
 public class TaskController {
 
@@ -21,7 +20,7 @@ public class TaskController {
         this.taskService = taskService;
     }
 
-    @GetMapping("/tasks")
+    @GetMapping
     public String list(Model model) {
         var taskList = taskService.find().stream()
                 .map(TaskDTO::toDTO)
@@ -30,7 +29,7 @@ public class TaskController {
         return "tasks/list";
     }
     
-    @GetMapping("/tasks/{id}")
+    @GetMapping("/{id}")
     public String showDetail(@PathVariable("id") long taskId, Model model) {
         // taskId -> TaskEntity
         var taskEntity = taskService.findById(taskId)
@@ -40,16 +39,14 @@ public class TaskController {
         return "tasks/detail";
     }
 
-    @GetMapping("/tasks/creationForm")
+    @GetMapping("/creationForm")
     public String showCreationForm() {
         return "tasks/form";
     }
 
-    @PostMapping("/tasks")
+    @PostMapping
     public String create(TaskForm form, Model model) {
-        var newEntity = new TaskEntity(null, form.summary(), form.description(), TaskStatus.valueOf(form.status()));
-        taskService.create(newEntity);
-        // ２重サブミットを防ぐため、リダイレクトを行います。
+        taskService.create(form.toEntity());
         return "redirect:/tasks";
     }
 }
