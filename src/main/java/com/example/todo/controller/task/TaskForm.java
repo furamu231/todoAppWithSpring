@@ -19,6 +19,11 @@ public record TaskForm (
     @Pattern(regexp = "TODO|DOING|DONE", message = "TODO, DOING, DONEのいずれかを選択してください")
     String status
 ) {
+
+    public static TaskForm fromEntity(TaskEntity entity) {
+        return new TaskForm(entity.summary(), entity.description(), entity.status().name());
+    }
+
     public TaskEntity toEntity() {
         return new TaskEntity(null, summary(), description(), TaskStatus.valueOf(status));
     }

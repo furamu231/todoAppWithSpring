@@ -31,13 +31,14 @@ public class TaskController {
         model.addAttribute("taskList", taskList);
         return "tasks/list";
     }
-    
+
     @GetMapping("/{id}")
     public String showDetail(@PathVariable("id") long taskId, Model model) {
         // taskId -> TaskEntity
-        var taskEntity = taskService.findById(taskId)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found. taskId: " + taskId));
-                model.addAttribute("task", TaskDTO.toDTO(taskEntity));    
+        var taskDTO = taskService.findById(taskId)
+        .map(TaskDTO::toDTO)
+                .orElseThrow(TaskNotFoundException::new);
+        model.addAttribute("task", taskDTO);
 
         return "tasks/detail";
     }
@@ -49,10 +50,10 @@ public class TaskController {
         // thymeleafのformタグ内でtaskFormを使用することで、formの初期値を設定することができます。
 
         // if (form == null) {
-        //     form = new TaskForm(null, null, null);
+        // form = new TaskForm(null, null, null);
         // }
         // model.addAttribute("taskForm", form);
-        
+
         return "tasks/form";
     }
 
@@ -68,13 +69,19 @@ public class TaskController {
 
     @GetMapping("/{id}/editForm")
     public String showEditForm(@PathVariable("id") long id, Model model) {
-        var taskEntity = taskService.findById(id)
-                .orElseThrow(() -> new IllegalArgumentException("Task not found. taskId: " + id));
-        var form = new TaskForm(taskEntity.summary(), taskEntity.description(), taskEntity.status().name());
+        var form = taskService.findById(id)
+                .map(TaskForm::fromEntity)
+                .orElseThrow(TaskNotFoundException::new);
+
+        // これは冗長なコードです。
+        // var form = new TaskForm(taskEntity.summary(), taskEntity.description(),
+        // taskEntity.status().name());
+
+        // Controller側でEntity変数を保持するのは好ましくないため、以下のコードは不要です。
+        // var form = TaskForm.fromEntity(taskEntity);
+
         model.addAttribute("taskForm", form);
         return "tasks/form";
 
     }
 }
-
-
