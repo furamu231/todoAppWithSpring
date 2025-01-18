@@ -24,7 +24,7 @@ public record TaskForm (
         return new TaskForm(entity.summary(), entity.description(), entity.status().name());
     }
 
-    public TaskEntity toEntity() {
-        return new TaskEntity(null, summary(), description(), TaskStatus.valueOf(status));
+    public TaskEntity toEntity(long id) {
+        return new TaskEntity(id, summary(), description(), TaskStatus.valueOf(status));
     }
 }

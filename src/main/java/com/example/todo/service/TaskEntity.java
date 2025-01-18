@@ -6,8 +6,8 @@ public record TaskEntity(
                 String description,
                 TaskStatus status) {
 
-        public TaskEntity withId(Long id) {
-                return new TaskEntity(id, this.summary, this.description, this.status);
-        }
+        // public TaskEntity withId(Long id) {
+        //         return new TaskEntity(id, this.summary, this.description, this.status);
+        // }
 
 }

@@ -54,7 +54,7 @@ public class TaskController {
             // return "tasks/form"; この方法は、入力値が保持されないため、推奨されません。（uxの観点で非推奨です）
             return showCreationForm(form);
         }
-        taskService.create(form.toEntity());
+        taskService.create(form.toEntity(0));
         return "redirect:/tasks";
     }
 
@@ -76,7 +76,7 @@ public class TaskController {
         }
         
         // formをTaskEntityに変換して、IDを設定してから、更新処理を行います。
-        var taskEntity = form.toEntity().withId(id);
+        var taskEntity = form.toEntity(id);
         taskService.update(taskEntity);
 
         // taskService.update(form.toEntity());
