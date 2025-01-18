@@ -4,15 +4,19 @@ import com.example.todo.service.TaskEntity;
 import com.example.todo.service.TaskStatus;
 
 import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 public record TaskForm (
 
     @NotBlank
+    @Size(max = 256, message = "256文字以内で入力してください")
     String summary,
 
     String description,
     
     @NotBlank
+    @Pattern(regexp = "TODO|DOING|DONE", message = "TODO, DOING, DONEのいずれかを選択してください")
     String status
 ) {
     public TaskEntity toEntity() {

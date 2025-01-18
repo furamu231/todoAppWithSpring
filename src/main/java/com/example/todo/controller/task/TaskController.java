@@ -44,10 +44,15 @@ public class TaskController {
 
     @GetMapping("/creationForm")
     public String showCreationForm(@ModelAttribute TaskForm form) {
+
+        // @ModelAttribute TaskForm formを使用することで、以下のコードは不要になります。
+        // thymeleafのformタグ内でtaskFormを使用することで、formの初期値を設定することができます。
+
         // if (form == null) {
         //     form = new TaskForm(null, null, null);
         // }
         // model.addAttribute("taskForm", form);
+        
         return "tasks/form";
     }
 
