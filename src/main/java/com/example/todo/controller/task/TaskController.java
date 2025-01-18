@@ -9,7 +9,6 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-
 import com.example.todo.service.TaskService;
 
 @Controller
@@ -36,7 +35,7 @@ public class TaskController {
     public String showDetail(@PathVariable("id") long taskId, Model model) {
         // taskId -> TaskEntity
         var taskDTO = taskService.findById(taskId)
-        .map(TaskDTO::toDTO)
+                .map(TaskDTO::toDTO)
                 .orElseThrow(TaskNotFoundException::new);
         model.addAttribute("task", taskDTO);
 
@@ -45,14 +44,6 @@ public class TaskController {
 
     @GetMapping("/creationForm")
     public String showCreationForm(@ModelAttribute TaskForm form) {
-
-        // @ModelAttribute TaskForm formを使用することで、以下のコードは不要になります。
-        // thymeleafのformタグ内でtaskFormを使用することで、formの初期値を設定することができます。
-
-        // if (form == null) {
-        // form = new TaskForm(null, null, null);
-        // }
-        // model.addAttribute("taskForm", form);
 
         return "tasks/form";
     }
@@ -69,19 +60,26 @@ public class TaskController {
 
     @GetMapping("/{id}/editForm")
     public String showEditForm(@PathVariable("id") long id, Model model) {
+
         var form = taskService.findById(id)
                 .map(TaskForm::fromEntity)
                 .orElseThrow(TaskNotFoundException::new);
-
-        // これは冗長なコードです。
-        // var form = new TaskForm(taskEntity.summary(), taskEntity.description(),
-        // taskEntity.status().name());
-
-        // Controller側でEntity変数を保持するのは好ましくないため、以下のコードは不要です。
-        // var form = TaskForm.fromEntity(taskEntity);
-
         model.addAttribute("taskForm", form);
-        return "tasks/form";
+        return "tasks/edit";
+    }
 
+    @PostMapping("/{id}/editForm")
+    public String edit(@PathVariable("id") long id, @Validated TaskForm form, BindingResult bindingResult,
+            Model model) {
+        if (bindingResult.hasErrors()) {
+            return showEditForm(id, model);
+        }
+        
+        // formをTaskEntityに変換して、IDを設定してから、更新処理を行います。
+        var taskEntity = form.toEntity().withId(id);
+        taskService.update(taskEntity);
+
+        // taskService.update(form.toEntity());
+        return "redirect:/tasks";
     }
 }

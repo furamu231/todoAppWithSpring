@@ -32,4 +32,10 @@ public class TaskService {
     public void create(TaskEntity taskEntity) {
         taskRepository.insert(taskEntity);
     }
+
+    @Transactional
+    public void update(TaskEntity taskEntity) {
+        System.out.println("taskEntityのID: " + taskEntity.id());
+        taskRepository.update(taskEntity);
+    }
 }
